@@ -22,11 +22,16 @@ public class Application {
 			inventory.setQuantity(100);
 
 			Inventory inventory1 = new Inventory();
+			inventory.setSkuCode("iphone_13");
+			inventory.setQuantity(100);
+
+			Inventory inventory2 = new Inventory();
 			inventory1.setSkuCode("iphone_13_white");
 			inventory.setQuantity(0);
 
 			inventoryRepository.save(inventory);
 			inventoryRepository.save(inventory1);
+			inventoryRepository.save(inventory2);
 		};
 	}
 }
