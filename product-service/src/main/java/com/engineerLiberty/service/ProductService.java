@@ -5,6 +5,7 @@ import com.engineerLiberty.reponse.ProductResponse;
 import com.engineerLiberty.repository.ProductRepository;
 import com.engineerLiberty.request.ProductRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
     public void addNewProduct(ProductRequest productRequest) {
@@ -22,6 +24,7 @@ public class ProductService {
                 .price(productRequest.getPrice())
                 .build();
             productRepository.save(product);
+            log.info("Data saved to Database");
     }
 
     public List<ProductResponse> findAllProduct() {
