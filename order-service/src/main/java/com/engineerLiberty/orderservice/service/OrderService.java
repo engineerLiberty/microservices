@@ -1,5 +1,6 @@
 package com.engineerLiberty.orderservice.service;
 
+import com.engineerLiberty.orderservice.config.WebclientConfig;
 import com.engineerLiberty.orderservice.dto.OderLineItemDto;
 import com.engineerLiberty.orderservice.dto.OrderRequest;
 import com.engineerLiberty.orderservice.model.Order;
@@ -22,6 +23,7 @@ import java.util.function.Supplier;
 @Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final WebclientConfig webClient;
     public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -29,6 +31,9 @@ public class OrderService {
                 .map(this::mapToOrderLineItem)
                 .toList();
         order.setOrderLineItemsList(orderLineItemsList);
+List<InventoryResponse> inventoryResponses = webClient.webClient().uri("")
+        .retrieve()
+        .bodyToMono(InventoryResponse.class);
         log.info("OderNumber {}",order.getOrderNumber());
         orderRepository.save(order);
     }

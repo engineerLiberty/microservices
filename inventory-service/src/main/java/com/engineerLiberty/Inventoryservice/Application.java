@@ -19,15 +19,15 @@ public class Application {
 		return args -> {
 			Inventory inventory = new Inventory();
 			inventory.setSkuCode("iphone_13");
-			inventory.setQuantity(100);
+			inventory.setQuantity(8);
 
 			Inventory inventory1 = new Inventory();
-			inventory.setSkuCode("iphone_13");
-			inventory.setQuantity(100);
+			inventory1.setSkuCode("iphone_13_blue");
+			inventory1.setQuantity(10);
 
 			Inventory inventory2 = new Inventory();
-			inventory1.setSkuCode("iphone_13_white");
-			inventory.setQuantity(0);
+			inventory2.setSkuCode("iphone_13_white");
+			inventory2.setQuantity(0);
 
 			inventoryRepository.save(inventory);
 			inventoryRepository.save(inventory1);
