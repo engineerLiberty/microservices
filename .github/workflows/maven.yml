@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: microservices
+name: microservices project workflow
 
 on:
   push:
