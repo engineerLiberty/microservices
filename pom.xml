@@ -25,6 +25,10 @@
         <maven.compiler.target>7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <build>
+        <finalName>microservice</finalName>
+    </build>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -36,5 +40,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>
