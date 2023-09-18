@@ -19,6 +19,7 @@ public class ProductController {
     public void createProduct(@RequestBody ProductRequest productRequest) {
         productService.addNewProduct(productRequest);
     }
+
     @GetMapping("/findProduct")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> findAll() {
