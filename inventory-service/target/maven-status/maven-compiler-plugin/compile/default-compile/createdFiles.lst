@@ -1,0 +1,7 @@
+com/engineerLiberty/Inventoryservice/Application.class
+com/engineerLiberty/Inventoryservice/repository/InventoryRepository.class
+com/engineerLiberty/Inventoryservice/controller/InventoryController.class
+com/engineerLiberty/Inventoryservice/dto/InventoryResponse$InventoryResponseBuilder.class
+com/engineerLiberty/Inventoryservice/dto/InventoryResponse.class
+com/engineerLiberty/Inventoryservice/model/Inventory.class
+com/engineerLiberty/Inventoryservice/service/InventoryService.class
