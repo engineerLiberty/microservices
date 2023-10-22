@@ -2,6 +2,7 @@ package com.engineerLiberty.service;
 
 import com.engineerLiberty.model.Product;
 import com.engineerLiberty.reponse.ProductResponse;
+//import com.engineerLiberty.repository.ProductRepository;
 import com.engineerLiberty.repository.ProductRepository;
 import com.engineerLiberty.request.ProductRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,14 @@ import java.util.List;
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
-    public void addNewProduct(ProductRequest productRequest) {
+    public String addNewProduct(ProductRequest productRequest) {
         Product product = Product.builder()
                 .name(productRequest.getName())
                 .description(productRequest.getDescription())
                 .price(productRequest.getPrice())
                 .build();
             productRepository.save(product);
-            log.info("Data saved to Database");
+            return "Data saved to Database";
     }
 
     public List<ProductResponse> findAllProduct() {
@@ -34,7 +35,7 @@ public class ProductService {
 
     private ProductResponse mapToProductResponse(Product product) {
         return ProductResponse.builder()
-                .id(product.getId())
+                .id(String.valueOf(product.getId()))
                 .description(product.getDescription())
                 .name(product.getName())
                 .price(product.getPrice())

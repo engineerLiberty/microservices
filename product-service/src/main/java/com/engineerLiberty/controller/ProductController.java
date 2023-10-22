@@ -14,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    @RequestMapping("create")
+    @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest productRequest) {
-        productService.addNewProduct(productRequest);
+    public String createProduct(@RequestBody ProductRequest productRequest) {
+       return productService.addNewProduct(productRequest);
     }
 
     @GetMapping("/findProduct")

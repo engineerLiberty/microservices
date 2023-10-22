@@ -1,9 +1,10 @@
 package com.engineerLiberty.orderservice.service;
+
 import com.engineerLiberty.orderservice.dto.InventoryResponse;
-import com.engineerLiberty.orderservice.dto.OderLineItemDto;
+import com.engineerLiberty.orderservice.dto.OderLineItemsDto;
 import com.engineerLiberty.orderservice.dto.OrderRequest;
-import com.engineerLiberty.orderservice.model.Order;
-import com.engineerLiberty.orderservice.model.OrderLineItems;
+import com.engineerLiberty.orderservice.model.Orders;
+import com.engineerLiberty.orderservice.model.OrderItem;
 import com.engineerLiberty.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,44 +23,34 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
+
     public void placeOrder(OrderRequest orderRequest) {
-        Order order = new Order();
+        Orders order = new Orders();
         order.setOrderNumber(UUID.randomUUID().toString());
-        List<OrderLineItems> orderLineItemsList = orderRequest.getOderLineItemDto().stream()
-                .map(this::mapToOrderLineItem)
-                .toList();
-        order.setOrderLineItemsList(orderLineItemsList);
+        List<OrderItem> orderLineItemsList = orderRequest.getOderLineItemsDto().stream().map(this::mapToOrderLineItem).toList();
+        order.setOrderItems(orderLineItemsList);
+        log.info("OderNumber {}", order.getOrderNumber());
+        List<String> skuCodes = order.getOrderItems().stream().map(OrderItem::getSkuCode).toList();
 
-        log.info("OderNumber {}",order.getOrderNumber());
-
-      List<String> skuCodes = order.getOrderLineItemsList().stream().map(OrderLineItems::getSkuCode).toList();
-
-      InventoryResponse[] inventoryResponseArray = webClient.get()
-               .uri("http://localhost:8081/api/inventory",
-                       uriBuilder -> uriBuilder
-                                       .queryParam("skuCode", skuCodes)
-                                       .build())
-               .retrieve()
-               .bodyToMono(InventoryResponse[].class)
-               .block();
-
+        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
+                .uri("http://inventory-service/api/inventory",
+                        uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
+                .retrieve().bodyToMono(InventoryResponse[].class)
+                .block();
         assert inventoryResponseArray != null;
-        boolean allProductIsInStock = Arrays.stream(inventoryResponseArray).allMatch(InventoryResponse::isInStock);
-          if (allProductIsInStock) {
-              log.info("Order booked");
-              orderRepository.save(order);
-          } else {
-              throw new IllegalArgumentException("Order not in stock");
-          }
-      }
+        boolean isInStock = Arrays.stream(inventoryResponseArray).allMatch(InventoryResponse::isInStock);
 
-    private OrderLineItems mapToOrderLineItem(OderLineItemDto orderLineItemDto) {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.setId(orderLineItemDto.getId());
-        orderLineItems.setPrice(orderLineItemDto.getPrice());
-        orderLineItems.setSkuCode(orderLineItemDto.getSkuCode());
-        orderLineItems.setQuantity(orderLineItemDto.getQuantity());
-        return orderLineItems;
+        if (isInStock) {
+            orderRepository.save(order);
+        }
+    }
+
+    private OrderItem mapToOrderLineItem(OderLineItemsDto orderItems) {
+        return OrderItem.builder()
+                .price(orderItems.getPrice())
+                .quantity(orderItems.getQuantity())
+                .skuCode(orderItems.getSkuCode())
+                .build();
     }
 }
